@@ -22,5 +22,10 @@ namespace Workshop_Manufaktur_Terpadu
             AboutForm aboutForm = new AboutForm();
             aboutForm.ShowDialog();
         }
+
+        private void project_button_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
