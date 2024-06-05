@@ -10,17 +10,16 @@ using System.Windows.Forms;
 
 namespace Workshop_Manufaktur_Terpadu
 {
-    public partial class MainForm : Form
+    public partial class AboutForm : Form
     {
-        public MainForm()
+        public AboutForm()
         {
             InitializeComponent();
         }
 
-        private void about_button_Click(object sender, EventArgs e)
+        private void AboutForm_Load(object sender, EventArgs e)
         {
-            AboutForm aboutForm = new AboutForm();
-            aboutForm.ShowDialog();
+
         }
     }
 }
