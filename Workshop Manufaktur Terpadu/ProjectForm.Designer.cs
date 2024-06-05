@@ -30,21 +30,21 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.serialPortComboBox = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.close_button = new System.Windows.Forms.Button();
             this.connect_button = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.serialPortComboBox = new System.Windows.Forms.ComboBox();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.plcOnTestButton = new System.Windows.Forms.Button();
-            this.plcOffTestButton = new System.Windows.Forms.Button();
+            this.plcOffTest_button = new System.Windows.Forms.Button();
+            this.plcOnTest_button = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.close_button);
             this.groupBox1.Controls.Add(this.connect_button);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.serialPortComboBox);
@@ -55,22 +55,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Connectivity";
             // 
-            // serialPortComboBox
+            // close_button
             // 
-            this.serialPortComboBox.FormattingEnabled = true;
-            this.serialPortComboBox.Location = new System.Drawing.Point(75, 19);
-            this.serialPortComboBox.Name = "serialPortComboBox";
-            this.serialPortComboBox.Size = new System.Drawing.Size(88, 21);
-            this.serialPortComboBox.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Serial Port";
+            this.close_button.Location = new System.Drawing.Point(6, 104);
+            this.close_button.Name = "close_button";
+            this.close_button.Size = new System.Drawing.Size(157, 46);
+            this.close_button.TabIndex = 3;
+            this.close_button.Text = "Close";
+            this.close_button.UseVisualStyleBackColor = true;
+            this.close_button.Click += new System.EventHandler(this.close_button_Click);
             // 
             // connect_button
             // 
@@ -82,20 +75,29 @@
             this.connect_button.UseVisualStyleBackColor = true;
             this.connect_button.Click += new System.EventHandler(this.connect_button_Click);
             // 
-            // button1
+            // label1
             // 
-            this.button1.Location = new System.Drawing.Point(6, 104);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(157, 46);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Close";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 22);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(55, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Serial Port";
+            // 
+            // serialPortComboBox
+            // 
+            this.serialPortComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.serialPortComboBox.FormattingEnabled = true;
+            this.serialPortComboBox.Location = new System.Drawing.Point(75, 19);
+            this.serialPortComboBox.Name = "serialPortComboBox";
+            this.serialPortComboBox.Size = new System.Drawing.Size(88, 21);
+            this.serialPortComboBox.TabIndex = 0;
+            this.serialPortComboBox.SelectedIndexChanged += new System.EventHandler(this.serialPortComboBox_SelectedIndexChanged);
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.plcOffTestButton);
-            this.groupBox2.Controls.Add(this.plcOnTestButton);
+            this.groupBox2.Controls.Add(this.plcOffTest_button);
+            this.groupBox2.Controls.Add(this.plcOnTest_button);
             this.groupBox2.Location = new System.Drawing.Point(187, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(169, 156);
@@ -103,23 +105,25 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "PLC Test";
             // 
-            // plcOnTestButton
+            // plcOffTest_button
             // 
-            this.plcOnTestButton.Location = new System.Drawing.Point(6, 19);
-            this.plcOnTestButton.Name = "plcOnTestButton";
-            this.plcOnTestButton.Size = new System.Drawing.Size(157, 59);
-            this.plcOnTestButton.TabIndex = 0;
-            this.plcOnTestButton.Text = "ON";
-            this.plcOnTestButton.UseVisualStyleBackColor = true;
+            this.plcOffTest_button.Location = new System.Drawing.Point(6, 91);
+            this.plcOffTest_button.Name = "plcOffTest_button";
+            this.plcOffTest_button.Size = new System.Drawing.Size(157, 59);
+            this.plcOffTest_button.TabIndex = 1;
+            this.plcOffTest_button.Text = "OFF";
+            this.plcOffTest_button.UseVisualStyleBackColor = true;
+            this.plcOffTest_button.Click += new System.EventHandler(this.plcOffTest_button_Click);
             // 
-            // plcOffTestButton
+            // plcOnTest_button
             // 
-            this.plcOffTestButton.Location = new System.Drawing.Point(6, 91);
-            this.plcOffTestButton.Name = "plcOffTestButton";
-            this.plcOffTestButton.Size = new System.Drawing.Size(157, 59);
-            this.plcOffTestButton.TabIndex = 1;
-            this.plcOffTestButton.Text = "OFF";
-            this.plcOffTestButton.UseVisualStyleBackColor = true;
+            this.plcOnTest_button.Location = new System.Drawing.Point(6, 19);
+            this.plcOnTest_button.Name = "plcOnTest_button";
+            this.plcOnTest_button.Size = new System.Drawing.Size(157, 59);
+            this.plcOnTest_button.TabIndex = 0;
+            this.plcOnTest_button.Text = "ON";
+            this.plcOnTest_button.UseVisualStyleBackColor = true;
+            this.plcOnTest_button.Click += new System.EventHandler(this.plcOnTest_button_Click);
             // 
             // ProjectForm
             // 
@@ -144,10 +148,10 @@
         private System.Windows.Forms.Button connect_button;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox serialPortComboBox;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button close_button;
         private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button plcOnTestButton;
-        private System.Windows.Forms.Button plcOffTestButton;
+        private System.Windows.Forms.Button plcOnTest_button;
+        private System.Windows.Forms.Button plcOffTest_button;
     }
 }
