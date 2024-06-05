@@ -34,8 +34,17 @@ namespace Workshop_Manufaktur_Terpadu
 
         private void connect_button_Click(object sender, EventArgs e)
         {
-            serialPort1.PortName = serialPortComboBox.Text;
-            serialPort1.Open();
+            try
+            {
+                serialPort1.PortName = serialPortComboBox.Text;
+                serialPort1.Open();
+                message_toolStripStatusLabel.Text = serialPort1.PortName + " is connected";
+            }
+
+            catch(Exception ex)
+            {
+                message_toolStripStatusLabel.Text = "Error:" + ex.Message.ToString();
+            }
 
             connect_button.Enabled = false;
             close_button.Enabled = true;
@@ -44,9 +53,6 @@ namespace Workshop_Manufaktur_Terpadu
             plcOnTest_button.Enabled = true;
 
             serialPortComboBox.Enabled = false;
-
-            // Please change this later
-            ProjectForm.ActiveForm.Text = serialPort1.PortName + " is connected";
         }
 
         private void close_button_Click(object sender, EventArgs e)

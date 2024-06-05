@@ -38,8 +38,11 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.plcOffTest_button = new System.Windows.Forms.Button();
             this.plcOnTest_button = new System.Windows.Forms.Button();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.message_toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -94,6 +97,12 @@
             this.serialPortComboBox.TabIndex = 0;
             this.serialPortComboBox.SelectedIndexChanged += new System.EventHandler(this.serialPortComboBox_SelectedIndexChanged);
             // 
+            // serialPort1
+            // 
+            this.serialPort1.DataBits = 7;
+            this.serialPort1.Parity = System.IO.Ports.Parity.Even;
+            this.serialPort1.StopBits = System.IO.Ports.StopBits.Two;
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.plcOffTest_button);
@@ -125,11 +134,28 @@
             this.plcOnTest_button.UseVisualStyleBackColor = true;
             this.plcOnTest_button.Click += new System.EventHandler(this.plcOnTest_button_Click);
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.message_toolStripStatusLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 184);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(374, 22);
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // message_toolStripStatusLabel
+            // 
+            this.message_toolStripStatusLabel.Name = "message_toolStripStatusLabel";
+            this.message_toolStripStatusLabel.Size = new System.Drawing.Size(53, 17);
+            this.message_toolStripStatusLabel.Text = "Message";
+            // 
             // ProjectForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(374, 180);
+            this.ClientSize = new System.Drawing.Size(374, 206);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "ProjectForm";
@@ -138,7 +164,10 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -153,5 +182,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button plcOnTest_button;
         private System.Windows.Forms.Button plcOffTest_button;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel message_toolStripStatusLabel;
     }
 }
