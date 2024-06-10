@@ -58,6 +58,8 @@
             this.Name = "TruckGame";
             this.Text = "TruckGame";
             this.Load += new System.EventHandler(this.TruckGame_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TruckGame_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TruckGame_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.carPictureBox)).EndInit();
             this.ResumeLayout(false);
 
