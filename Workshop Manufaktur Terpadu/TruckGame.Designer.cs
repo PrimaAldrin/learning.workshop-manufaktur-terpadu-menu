@@ -29,46 +29,91 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.carPictureBox = new System.Windows.Forms.PictureBox();
-            this.gameTimer = new System.Windows.Forms.Timer(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.carPictureBox)).BeginInit();
+            this.btnLeft = new System.Windows.Forms.Button();
+            this.btnRight = new System.Windows.Forms.Button();
+            this.moveTimer = new System.Windows.Forms.Timer(this.components);
+            this.chkSensor = new System.Windows.Forms.CheckBox();
+            this.sensor = new System.Windows.Forms.Panel();
+            this.picCar = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.picCar)).BeginInit();
             this.SuspendLayout();
             // 
-            // carPictureBox
+            // btnLeft
             // 
-            this.carPictureBox.BackgroundImage = global::Workshop_Manufaktur_Terpadu.Properties.Resources.vecteezy_ai_generated_black_delivery_truck_on_transparent_background_35907399;
-            this.carPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.carPictureBox.Location = new System.Drawing.Point(43, 255);
-            this.carPictureBox.Name = "carPictureBox";
-            this.carPictureBox.Size = new System.Drawing.Size(178, 110);
-            this.carPictureBox.TabIndex = 0;
-            this.carPictureBox.TabStop = false;
+            this.btnLeft.Location = new System.Drawing.Point(12, 352);
+            this.btnLeft.Name = "btnLeft";
+            this.btnLeft.Size = new System.Drawing.Size(127, 86);
+            this.btnLeft.TabIndex = 1;
+            this.btnLeft.Text = "Kiri";
+            this.btnLeft.UseVisualStyleBackColor = true;
             // 
-            // gameTimer
+            // btnRight
             // 
-            this.gameTimer.Interval = 20;
-            this.gameTimer.Tick += new System.EventHandler(this.gameTimer_Tick);
+            this.btnRight.Location = new System.Drawing.Point(145, 352);
+            this.btnRight.Name = "btnRight";
+            this.btnRight.Size = new System.Drawing.Size(127, 86);
+            this.btnRight.TabIndex = 2;
+            this.btnRight.Text = "Kanan";
+            this.btnRight.UseVisualStyleBackColor = true;
+            // 
+            // moveTimer
+            // 
+            this.moveTimer.Interval = 50;
+            // 
+            // chkSensor
+            // 
+            this.chkSensor.AutoCheck = false;
+            this.chkSensor.AutoSize = true;
+            this.chkSensor.Location = new System.Drawing.Point(279, 352);
+            this.chkSensor.Name = "chkSensor";
+            this.chkSensor.Size = new System.Drawing.Size(59, 17);
+            this.chkSensor.TabIndex = 3;
+            this.chkSensor.Text = "Sensor";
+            this.chkSensor.UseVisualStyleBackColor = true;
+            // 
+            // sensor
+            // 
+            this.sensor.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.sensor.Location = new System.Drawing.Point(347, 175);
+            this.sensor.Name = "sensor";
+            this.sensor.Size = new System.Drawing.Size(47, 45);
+            this.sensor.TabIndex = 4;
+            // 
+            // picCar
+            // 
+            this.picCar.BackgroundImage = global::Workshop_Manufaktur_Terpadu.Properties.Resources.vecteezy_ai_generated_black_delivery_truck_on_transparent_background_359073991;
+            this.picCar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.picCar.Location = new System.Drawing.Point(42, 159);
+            this.picCar.Name = "picCar";
+            this.picCar.Size = new System.Drawing.Size(178, 61);
+            this.picCar.TabIndex = 0;
+            this.picCar.TabStop = false;
             // 
             // TruckGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.carPictureBox);
+            this.Controls.Add(this.sensor);
+            this.Controls.Add(this.chkSensor);
+            this.Controls.Add(this.btnRight);
+            this.Controls.Add(this.btnLeft);
+            this.Controls.Add(this.picCar);
             this.KeyPreview = true;
             this.Name = "TruckGame";
             this.Text = "TruckGame";
-            this.Load += new System.EventHandler(this.TruckGame_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TruckGame_KeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TruckGame_KeyUp);
-            ((System.ComponentModel.ISupportInitialize)(this.carPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picCar)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.PictureBox carPictureBox;
-        private System.Windows.Forms.Timer gameTimer;
+        private System.Windows.Forms.Button btnLeft;
+        private System.Windows.Forms.Button btnRight;
+        private System.Windows.Forms.PictureBox picCar;
+        private System.Windows.Forms.Timer moveTimer;
+        private System.Windows.Forms.CheckBox chkSensor;
+        private System.Windows.Forms.Panel sensor;
     }
 }

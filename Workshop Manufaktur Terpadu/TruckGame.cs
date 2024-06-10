@@ -12,57 +12,105 @@ namespace Workshop_Manufaktur_Terpadu
 {
     public partial class TruckGame : Form
     {
-        private int carSpeed = 5;
-        private int roadWidth;
-
-        private bool goLeft, goRight;
+        private int carPositionX;
+        private bool moveLeft;
+        private bool moveRight;
 
         public TruckGame()
         {
             InitializeComponent();
+            InitializeGame();
         }
 
-        private void TruckGame_Load(object sender, EventArgs e)
+        private void InitializeGame()
         {
+            // Set initial position of the car
+            carPositionX = picCar.Location.X;
 
+            // Initialize timer
+            moveTimer.Interval = 50; // Set interval to 50 milliseconds
+            moveTimer.Tick += MoveTimer_Tick;
+
+            // Initialize button event handlers
+            btnLeft.MouseDown += BtnLeft_MouseDown;
+            btnLeft.MouseUp += BtnLeft_MouseUp;
+            btnRight.MouseDown += BtnRight_MouseDown;
+            btnRight.MouseUp += BtnRight_MouseUp;
         }
 
-        private void gameTimer_Tick(object sender, EventArgs e)
+        private void BtnLeft_MouseDown(object sender, MouseEventArgs e)
         {
-            roadWidth = this.ClientSize.Width;
+            moveLeft = true;
+            moveTimer.Start();
+        }
 
-            if (goLeft && carPictureBox.Left > 0)
+        private void BtnLeft_MouseUp(object sender, MouseEventArgs e)
+        {
+            moveLeft = false;
+            if (!moveRight)
             {
-                carPictureBox.Left -= carSpeed;
-            }
-
-            if (goRight && carPictureBox.Right < roadWidth)
-            {
-                carPictureBox.Left += carSpeed;
+                moveTimer.Stop();
             }
         }
 
-        private void TruckGame_KeyDown(object sender, KeyEventArgs e)
+        private void BtnRight_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
+            moveRight = true;
+            moveTimer.Start();
+        }
+
+        private void BtnRight_MouseUp(object sender, MouseEventArgs e)
+        {
+            moveRight = false;
+            if (!moveLeft)
             {
-                goLeft = true;
-            }
-            if (e.KeyCode == Keys.Right)
-            {
-                goRight = true;
+                moveTimer.Stop();
             }
         }
 
-        private void TruckGame_KeyUp(object sender, KeyEventArgs e)
+        private void MoveTimer_Tick(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
+            if (moveLeft)
             {
-                goLeft = false;
+                MoveCar(-10); // Move car to the left by 10 pixels
             }
-            if (e.KeyCode == Keys.Right)
+            if (moveRight)
             {
-                goRight = false;
+                MoveCar(10); // Move car to the right by 10 pixels
+            }
+
+            CheckSensor();
+        }
+
+        private void MoveCar(int deltaX)
+        {
+            carPositionX += deltaX;
+            // Ensure car stays within form boundaries
+            if (carPositionX < 0)
+            {
+                carPositionX = 0;
+            }
+            if (carPositionX + picCar.Width > this.ClientSize.Width)
+            {
+                carPositionX = this.ClientSize.Width - picCar.Width;
+            }
+            // Update car position
+            picCar.Location = new Point(carPositionX, picCar.Location.Y);
+        }
+
+        private void CheckSensor()
+        {
+            // Check if the car is in front of the sensor
+            Rectangle carRect = new Rectangle(picCar.Location, picCar.Size);
+            Rectangle sensorRect = new Rectangle(sensor.Location, sensor.Size);
+
+            if (carRect.IntersectsWith(sensorRect))
+            {
+                chkSensor.Checked = true;
+            }
+            else
+            {
+                chkSensor.Checked = false;
             }
         }
     }

@@ -113,5 +113,8 @@
   <ItemGroup>
     <None Include="Resources\vecteezy_ai-generated-black-delivery-truck-on-transparent-background_35907399.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vecteezy_ai-generated-black-delivery-truck-on-transparent-background_359073991.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
