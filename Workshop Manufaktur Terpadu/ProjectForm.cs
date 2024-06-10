@@ -43,16 +43,19 @@ namespace Workshop_Manufaktur_Terpadu
 
             catch(Exception ex)
             {
-                message_toolStripStatusLabel.Text = "Error:" + ex.Message.ToString();
+                message_toolStripStatusLabel.Text = "Error: " + ex.Message.ToString();
             }
 
-            connect_button.Enabled = false;
-            close_button.Enabled = true;
+            if (serialPort1.IsOpen)
+            {
+                connect_button.Enabled = false;
+                close_button.Enabled = true;
 
-            plcOffTest_button.Enabled = true;
-            plcOnTest_button.Enabled = true;
+                plcOffTest_button.Enabled = true;
+                plcOnTest_button.Enabled = true;
 
-            serialPortComboBox.Enabled = false;
+                serialPortComboBox.Enabled = false;
+            }
         }
 
         private void close_button_Click(object sender, EventArgs e)
@@ -60,13 +63,13 @@ namespace Workshop_Manufaktur_Terpadu
             serialPort1.Close();
 
             connect_button.Enabled = true;
+            close_button.Enabled = false;
             plcOffTest_button.Enabled = false;
             plcOnTest_button.Enabled = false;
 
             serialPortComboBox.Enabled = true;
 
-            // Please change this later
-            ProjectForm.ActiveForm.Text = "Final Project: Truck's Gate Solution";
+            message_toolStripStatusLabel.Text = serialPort1.PortName + " is closed";
         }
 
         private void plcOnTest_button_Click(object sender, EventArgs e)
@@ -82,6 +85,11 @@ namespace Workshop_Manufaktur_Terpadu
         private void serialPortComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             connect_button.Enabled = true;
+        }
+
+        private void groupBox3_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }
