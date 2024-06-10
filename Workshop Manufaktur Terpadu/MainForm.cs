@@ -28,5 +28,11 @@ namespace Workshop_Manufaktur_Terpadu
             ProjectForm projectForm = new ProjectForm();
             projectForm.Show();
         }
+
+        private void truckGame_Click(object sender, EventArgs e)
+        {
+            TruckGame truckGame = new TruckGame();
+            truckGame.Show();
+        }
     }
 }

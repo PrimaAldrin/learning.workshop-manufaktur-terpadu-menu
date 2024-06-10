@@ -30,6 +30,7 @@
         {
             this.about_button = new System.Windows.Forms.Button();
             this.project_button = new System.Windows.Forms.Button();
+            this.truckGame = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // about_button
@@ -52,11 +53,22 @@
             this.project_button.UseVisualStyleBackColor = true;
             this.project_button.Click += new System.EventHandler(this.project_button_Click);
             // 
+            // truckGame
+            // 
+            this.truckGame.Location = new System.Drawing.Point(279, 245);
+            this.truckGame.Name = "truckGame";
+            this.truckGame.Size = new System.Drawing.Size(79, 35);
+            this.truckGame.TabIndex = 2;
+            this.truckGame.Text = "Truck Game";
+            this.truckGame.UseVisualStyleBackColor = true;
+            this.truckGame.Click += new System.EventHandler(this.truckGame_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(540, 292);
+            this.Controls.Add(this.truckGame);
             this.Controls.Add(this.project_button);
             this.Controls.Add(this.about_button);
             this.Name = "MainForm";
@@ -69,6 +81,7 @@
 
         private System.Windows.Forms.Button about_button;
         private System.Windows.Forms.Button project_button;
+        private System.Windows.Forms.Button truckGame;
     }
 }
 
