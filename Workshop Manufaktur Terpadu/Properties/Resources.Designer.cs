@@ -63,6 +63,16 @@ namespace Workshop_Manufaktur_Terpadu.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap vecteezy_ai_generated_black_delivery_truck_on_transparent_background_35907399 {
+            get {
+                object obj = ResourceManager.GetObject("vecteezy_ai-generated-black-delivery-truck-on-transparent-background_35907399", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap WhatsApp_Image_2024_05_11_at_17_09_20_e1f81703 {
             get {
                 object obj = ResourceManager.GetObject("WhatsApp Image 2024-05-11 at 17.09.20_e1f81703", resourceCulture);

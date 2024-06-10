@@ -110,5 +110,8 @@
   <ItemGroup>
     <None Include="Resources\WhatsApp Image 2024-05-11 at 17.09.20_e1f81703.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vecteezy_ai-generated-black-delivery-truck-on-transparent-background_35907399.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
