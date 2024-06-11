@@ -51,8 +51,8 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.checkBox7 = new System.Windows.Forms.CheckBox();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.checkGateDown = new System.Windows.Forms.CheckBox();
+            this.checkGateUp = new System.Windows.Forms.CheckBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.BtnRight = new System.Windows.Forms.Button();
             this.BtnLeft = new System.Windows.Forms.Button();
@@ -201,7 +201,7 @@
             this.message_toolStripStatusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 538);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1041, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(708, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -285,8 +285,8 @@
             // 
             this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Controls.Add(this.progressBar1);
-            this.groupBox4.Controls.Add(this.checkBox7);
-            this.groupBox4.Controls.Add(this.checkBox6);
+            this.groupBox4.Controls.Add(this.checkGateDown);
+            this.groupBox4.Controls.Add(this.checkGateUp);
             this.groupBox4.Location = new System.Drawing.Point(568, 379);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(123, 156);
@@ -310,27 +310,27 @@
             this.progressBar1.Size = new System.Drawing.Size(100, 23);
             this.progressBar1.TabIndex = 10;
             // 
-            // checkBox7
+            // checkGateDown
             // 
-            this.checkBox7.AutoCheck = false;
-            this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(7, 42);
-            this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(110, 17);
-            this.checkBox7.TabIndex = 9;
-            this.checkBox7.Text = "Gate Motor Down";
-            this.checkBox7.UseVisualStyleBackColor = true;
+            this.checkGateDown.AutoCheck = false;
+            this.checkGateDown.AutoSize = true;
+            this.checkGateDown.Location = new System.Drawing.Point(7, 42);
+            this.checkGateDown.Name = "checkGateDown";
+            this.checkGateDown.Size = new System.Drawing.Size(110, 17);
+            this.checkGateDown.TabIndex = 9;
+            this.checkGateDown.Text = "Gate Motor Down";
+            this.checkGateDown.UseVisualStyleBackColor = true;
             // 
-            // checkBox6
+            // checkGateUp
             // 
-            this.checkBox6.AutoCheck = false;
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(7, 20);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(96, 17);
-            this.checkBox6.TabIndex = 8;
-            this.checkBox6.Text = "Gate Motor Up";
-            this.checkBox6.UseVisualStyleBackColor = true;
+            this.checkGateUp.AutoCheck = false;
+            this.checkGateUp.AutoSize = true;
+            this.checkGateUp.Location = new System.Drawing.Point(7, 20);
+            this.checkGateUp.Name = "checkGateUp";
+            this.checkGateUp.Size = new System.Drawing.Size(96, 17);
+            this.checkGateUp.TabIndex = 8;
+            this.checkGateUp.Text = "Gate Motor Up";
+            this.checkGateUp.UseVisualStyleBackColor = true;
             // 
             // groupBox5
             // 
@@ -472,14 +472,14 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(368, 293);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(648, 69);
+            this.listBox1.Size = new System.Drawing.Size(323, 69);
             this.listBox1.TabIndex = 16;
             // 
             // ProjectForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1041, 560);
+            this.ClientSize = new System.Drawing.Size(708, 560);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.projectStatus);
             this.Controls.Add(this.button1);
@@ -539,8 +539,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.CheckBox checkBox7;
-        private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.CheckBox checkGateDown;
+        private System.Windows.Forms.CheckBox checkGateUp;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button BtnRight;
         private System.Windows.Forms.Button BtnLeft;

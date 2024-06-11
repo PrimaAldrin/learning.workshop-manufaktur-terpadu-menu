@@ -16,6 +16,8 @@ namespace Workshop_Manufaktur_Terpadu
         private bool moveLeft;
         private bool moveRight;
 
+        private bool sensorPreviouslyDetected = false;
+
         public TruckGame()
         {
             InitializeComponent();
@@ -104,14 +106,21 @@ namespace Workshop_Manufaktur_Terpadu
             Rectangle carRect = new Rectangle(picCar.Location, picCar.Size);
             Rectangle sensorRect = new Rectangle(sensor.Location, sensor.Size);
 
-            if (carRect.IntersectsWith(sensorRect))
+            bool sensorDetected = carRect.IntersectsWith(sensorRect);
+
+            if (sensorDetected && !sensorPreviouslyDetected)
             {
                 chkSensor.Checked = true;
+                Console.WriteLine("ON edge trigger");
+                listBox1.Items.Add("satu kali ON");
             }
-            else
+            else if (!sensorDetected && sensorPreviouslyDetected)
             {
                 chkSensor.Checked = false;
+                Console.WriteLine("Off egde trigger");
+                listBox1.Items.Add("satu kali OFF");
             }
+            sensorPreviouslyDetected = sensorDetected;
         }
     }
 }

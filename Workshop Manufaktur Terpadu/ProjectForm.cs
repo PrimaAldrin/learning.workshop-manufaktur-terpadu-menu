@@ -15,11 +15,15 @@ namespace Workshop_Manufaktur_Terpadu
         bool enableConnectPort = false;
         bool enableConnectBaud = false;
 
+        bool ultTempSensorPreviouslyDetected = false;
+        bool topLSSensorPreviouslyDetected = false;
+        bool bottomLSSensorPreviouslyDetected = false;
+
         private int carPositionX;
         private bool moveLeft;
         private bool moveRight;
         bool doorOpen;
-        int doorSpeed = 4;
+        int doorSpeed = 1;
 
         public ProjectForm()
         {
@@ -47,6 +51,18 @@ namespace Workshop_Manufaktur_Terpadu
             BtnLeft.MouseUp += BtnLeft_MouseUp;
             BtnRight.MouseDown += BtnRight_MouseDown;
             BtnRight.MouseUp += BtnRight_MouseUp;
+        }
+
+        private void InitializePLC()
+        {
+            // baru connect langsung cek status pintu
+            // cek bottom dan top ls
+            serialPort1.WriteLine("@00RR0000002042*");
+            serialPort1.WriteLine("@00RR0000004044*");
+
+            // fix error saja
+            serialPort1.WriteLine("@00RR0000000848*");
+            serialPort1.WriteLine("@00RR0001000445*");
         }
 
         private void BtnLeft_MouseDown(object sender, MouseEventArgs e)
@@ -91,7 +107,6 @@ namespace Workshop_Manufaktur_Terpadu
             }
 
             CheckUltraSensor();
-            CheckTempSensor();
         }
 
         private void MoveCar(int deltaX)
@@ -152,7 +167,9 @@ namespace Workshop_Manufaktur_Terpadu
 
                 serialPortComboBox.Enabled = false;
                 baudrateComboBox.Enabled = false;
+                InitializePLC();
             }
+
         }
 
         private void close_button_Click(object sender, EventArgs e)
@@ -209,30 +226,29 @@ namespace Workshop_Manufaktur_Terpadu
             Rectangle carRect = new Rectangle(picCar.Location, picCar.Size);
             Rectangle sensorRect = new Rectangle(ultSensor.Location, ultSensor.Size);
 
-            if (carRect.IntersectsWith(sensorRect))
+            bool sensorDetected = carRect.IntersectsWith(sensorRect);
+
+            if (sensorDetected && !ultTempSensorPreviouslyDetected)
             {
                 // Nyalakan US dan Temp bersamaan
                 serialPort1.WriteLine("@00WR0000000C36*");
-                // request pembacaan US
-                //serialPort1.WriteLine("@00RR0000001041*");
-                // On = @00RR00000400240000000000000000000000000000000042*
-                // Off= @00RR00000000040000000000000000000000000000000044*
+                serialPort1.WriteLine("@00RR0000000848*");
+
+                // Cek motor up
+                serialPort1.WriteLine("@00RR0001000445*");
             }
+            else if (!sensorDetected && ultTempSensorPreviouslyDetected)
+            {
+                serialPort1.WriteLine("@00WR0000000045*");
+                serialPort1.WriteLine("@00RR0000000848*");
+            }
+            ultTempSensorPreviouslyDetected = sensorDetected;
         }
         private void CheckTempSensor()
         {
             // Check if the car is in front of the sensor
             Rectangle carRect = new Rectangle(picCar.Location, picCar.Size);
             Rectangle sensorRect = new Rectangle(tempSensor.Location, tempSensor.Size);
-
-            if (carRect.IntersectsWith(sensorRect))
-            {
-                serialPort1.WriteLine("@00RR0000002042*");
-                // request pembacaan
-                //serialPort1.WriteLine("@00RR0000002042*");
-                // OFF = @00RR000000000400000000000000000000000000000000000000000000000000000000000000000000000044*
-                // ON  = @00RR000004002400000000000000000000000000000000000000000000000000000000000000000000000042*
-            }
         }
 
         private void CheckTopLSSensor()
@@ -240,13 +256,15 @@ namespace Workshop_Manufaktur_Terpadu
             Rectangle doorRect = new Rectangle(btnDoor.Location, btnDoor.Size);
             Rectangle sensorRect = new Rectangle(topLSSensor.Location, topLSSensor.Size);
 
-            if(doorRect.IntersectsWith(sensorRect))
+            bool sensorDetected = doorRect.IntersectsWith(sensorRect);
+
+            if(sensorDetected && !topLSSensorPreviouslyDetected)
             {
-                checkTop.Checked = true;
+                serialPort1.WriteLine("");
             }
             else
             {
-                checkTop.Checked = false;
+                serialPort1.WriteLine("");
             }
         }
 
@@ -255,9 +273,11 @@ namespace Workshop_Manufaktur_Terpadu
             Rectangle doorRect = new Rectangle(btnDoor.Location, btnDoor.Size);
             Rectangle sensorRect = new Rectangle(bottomLSSensor.Location, bottomLSSensor.Size);
 
-            if (doorRect.IntersectsWith(sensorRect))
+            bool sensorDetected = doorRect.IntersectsWith(sensorRect);
+
+            if (sensorDetected && !bottomLSSensorPreviouslyDetected)
             {
-                checkBottom.Checked = true;
+                
             }
             else
             {
@@ -334,7 +354,9 @@ namespace Workshop_Manufaktur_Terpadu
             }
             else
             {
-                // -------------------------------Change reading here
+                // -------------------------------Change reading status here
+
+                // Project Status
                 if (item.ToString().Contains("@00RR00000141*"))
                 {
                     projectStatus.Checked = true;
@@ -343,21 +365,45 @@ namespace Workshop_Manufaktur_Terpadu
                 {
                     projectStatus.Checked = false;
                 }
-                if (item.ToString().Contains("@00RR00000000000000000000000000000000000000000040*"))
-                {
-                    checkUltSensor.Checked = true;
-                }
-                if (item.ToString().Contains("@00RR00000000000000000000000000000000000000000040*"))
-                {
-                    checkUltSensor.Checked = false;
-                }
-                if (item.ToString().Contains("@00RR000004002400000000000000000000000000000000000000000000000000000000000000000000000042*"))
+
+                // Ultrasonic and temperature status
+                if (item.ToString().Contains("@00RR00000C000000000000000000000000000033*") || 
+                    item.ToString().Contains("@00RR00000C000400000000000000000000000037*"))
                 {
                     checkTemptSensor.Checked = true;
+                    checkUltSensor.Checked = true;
                 }
-                if (item.ToString().Contains("@00RR000000000400000000000000000000000000000000000000000000000000000000000000000000000044*"))
+
+                if (item.ToString().Contains("@00RR000000000000000000000000000000000040*") ||
+                    item.ToString().Contains("@00RR000000000400000000000000000000000044*"))
                 {
                     checkTemptSensor.Checked = false;
+                    checkUltSensor.Checked = false;
+                }
+
+                // Motor up status
+                if (item.ToString().Contains("@00RR00000400000000000044*"))
+                {
+                    checkGateUp.Checked = true;
+                    //openDoorTimer.Start();
+                }
+
+                if (item.ToString().Contains("@00RR00000000000000000040*"))
+                {
+                    checkGateUp.Checked = false;
+                }
+
+                // LS top status
+                if (item.ToString().Contains("@00RR0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040") ||
+                    item.ToString().Contains("000000000000000000000000000000000000000000*"))
+                {
+                    checkTop.Checked = true;
+                }
+
+                // LS bottom Status
+                if (item.ToString().Contains("@00RR000000000000000000000000000000000000000000000000000000000000000000000000000000000040*"))
+                {
+                    checkBottom.Checked = true;
                 }
 
                 listBox1.Items.Add(item);
