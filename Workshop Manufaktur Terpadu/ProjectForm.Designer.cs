@@ -202,7 +202,7 @@
             this.message_toolStripStatusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 538);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(708, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(923, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -473,7 +473,7 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(368, 293);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(323, 69);
+            this.listBox1.Size = new System.Drawing.Size(543, 69);
             this.listBox1.TabIndex = 16;
             // 
             // proxSensor
@@ -488,7 +488,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(708, 560);
+            this.ClientSize = new System.Drawing.Size(923, 560);
             this.Controls.Add(this.proxSensor);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.projectStatus);

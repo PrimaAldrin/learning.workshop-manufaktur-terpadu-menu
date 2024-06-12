@@ -181,6 +181,10 @@ namespace Workshop_Manufaktur_Terpadu
                 serialPortComboBox.Enabled = false;
                 baudrateComboBox.Enabled = false;
                 InitializePLC();
+
+                // Just checking, please delete later:
+                checkTop.Checked = true;
+                checkBottom.Checked = true;
             }
 
         }
@@ -243,16 +247,21 @@ namespace Workshop_Manufaktur_Terpadu
 
             if (sensorDetected && !ultTempSensorPreviouslyDetected)
             {
+                serialPort1.WriteLine("@00WR0000000C36*"); // Write on trigger S_TEMP and S_US
+                serialPort1.WriteLine("@00RR0000000444*"); // Request sensor status
+
+                serialPort1.WriteLine("@00RR0001000445*"); // Request O_MOTOR_STATUS
+/*
                 // Nyalakan US dan Temp bersamaan
                 serialPort1.WriteLine("@00WR0000000C36*");
                 serialPort1.WriteLine("@00RR0000000848*");
 
                 // Cek motor up
-                serialPort1.WriteLine("@00RR0001000445*");
+                serialPort1.WriteLine("@00RR0001000445*");*/
             }
             else if (!sensorDetected && ultTempSensorPreviouslyDetected)
             {
-                serialPort1.WriteLine("@00WR0000006043*");
+                serialPort1.WriteLine("@00WR0000007042*");
                 serialPort1.WriteLine("@00RR0000000848*");
             }
             ultTempSensorPreviouslyDetected = sensorDetected;
@@ -273,13 +282,20 @@ namespace Workshop_Manufaktur_Terpadu
 
             if(sensorDetected && !topLSSensorPreviouslyDetected)
             {
-                serialPort1.WriteLine("@00RR0000002042*");
+                serialPort1.WriteLine("@00WR0000004041*");
+                serialPort1.WriteLine("@00RR0000001041*");
+
+                /*serialPort1.WriteLine("@00RR0000002042*");
+                serialPort1.WriteLine("@00RR0000002042*");*/
             }
             else if(!sensorDetected && topLSSensorPreviouslyDetected)
             {
                 serialPort1.WriteLine("@00WR0000006C30*");
                 serialPort1.WriteLine("@00RR0000002042*");
-                serialPort1.WriteLine("@00RR0001000445*");
+
+                /*serialPort1.WriteLine("@00WR0000006C30*");
+                serialPort1.WriteLine("@00RR0000002042*");
+                serialPort1.WriteLine("@00RR0001000445*");*/
             }
             topLSSensorPreviouslyDetected = sensorDetected;
         }
@@ -294,12 +310,22 @@ namespace Workshop_Manufaktur_Terpadu
             if (sensorDetected && !bottomLSSensorPreviouslyDetected)
             {
                 serialPort1.WriteLine("@00RR0000004044*");
+                serialPort1.WriteLine("@00RR0001000849*");
+                serialPort1.WriteLine("@00WR0000000045*");
+                serialPort1.WriteLine("@00RR0000004044*"); // baca lagi bottom
+                serialPort1.WriteLine("@00RR0001000849*"); // baca lagi down motor
             }
             else if (!sensorDetected && bottomLSSensorPreviouslyDetected)
             {
-                serialPort1.WriteLine("@00WR0000004C32*");
+                serialPort1.WriteLine("@00WR0000004C32*"); // Write off trigger Bottom_LS
+
+                serialPort1.WriteLine("@00RR0000004044*"); // Request status Bottom_LS 2x untuk fix bug
                 serialPort1.WriteLine("@00RR0000004044*");
+
+
+                /*serialPort1.WriteLine("@00WR0000004C32*");
                 serialPort1.WriteLine("@00RR0000004044*");
+                serialPort1.WriteLine("@00RR0000004044*");*/
             }
             bottomLSSensorPreviouslyDetected = sensorDetected;
         }
@@ -323,8 +349,11 @@ namespace Workshop_Manufaktur_Terpadu
             }
             else if (!sensorDetected && proxSensorPreviouslyDetected)
             {
-                serialPort1.WriteLine("@00WR0000006043*");
-                serialPort1.WriteLine("@00RR0000001041*");
+                serialPort1.WriteLine("@00WR0000006043*"); // matikan proxy only
+                serialPort1.WriteLine("@00RR0000001041*"); // cek proxy
+                serialPort1.WriteLine("@00RR0001000849*"); // cek motor down
+                
+
                 /*serialPort1.WriteLine("@00WR0000007C31*");
                 serialPort1.WriteLine("@00WR0000006043*");*/
             }
@@ -366,10 +395,10 @@ namespace Workshop_Manufaktur_Terpadu
 
         private void btnStartProject_Click(object sender, EventArgs e)
         {
-            serialPort1.WriteLine("@00WR0000000144*");
-            serialPort1.WriteLine("@00WR0000000045*");
+            serialPort1.WriteLine("@00WR0000000144*"); // Write set
+            serialPort1.WriteLine("@00WR0000000045*"); // Turn off
 
-            serialPort1.WriteLine("@00RR0200000143*");
+            serialPort1.WriteLine("@00RR0200000143*"); // Read WBA_1 Condition
 
             // Read the ON/OFF status from PLC
             // Read request: @00RR0200000143*
@@ -379,12 +408,12 @@ namespace Workshop_Manufaktur_Terpadu
 
         private void btnStopProject_Click(object sender, EventArgs e)
         {
-            serialPort1.WriteLine("@00WR0000000247*");
-            serialPort1.WriteLine("@00WR0000000045*");
+            serialPort1.WriteLine("@00WR0000000247*"); // Write Reset
+            serialPort1.WriteLine("@00WR0000000045*"); // Turn off
 
-            serialPort1.WriteLine("@00RR0200000143*");
+            serialPort1.WriteLine("@00RR0200000143*"); // Read WBA_1 Condition
 
-            // cek bottom dan top ls
+            /*// cek bottom dan top ls
             serialPort1.WriteLine("@00RR0000002042*");
             serialPort1.WriteLine("@00RR0000004044*");
 
@@ -396,7 +425,7 @@ namespace Workshop_Manufaktur_Terpadu
             serialPort1.WriteLine("@00RR0000000848*");
 
             // cek motor up
-            serialPort1.WriteLine("@00RR0001000445*");
+            serialPort1.WriteLine("@00RR0001000445*");*/
         }
 
         private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
@@ -428,7 +457,34 @@ namespace Workshop_Manufaktur_Terpadu
                 }
 
                 // Ultrasonic and temperature status
-                if (item.ToString().Contains("@00RR00000C000000000000000000000000000033*") || 
+                if (item.ToString().Contains("@00RR00000C00040000000037*"))
+                {
+                    checkUltSensor.Checked = true;
+                    checkTemptSensor.Checked = true;
+                }
+
+                // Motor up status
+                if (item.ToString().Contains("@00RR00000400000000000044*"))
+                {
+                    checkGateUp.Checked = true;
+
+                    // Motor Up saat ini
+                    openDoorTimer.Start();
+                }
+
+                // BOTTOM_LS Status
+                if (item.ToString().Contains("@00RR00004C0004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000033"))
+                {
+                    checkBottom.Checked = false;
+                }
+
+                // TOP_LS Status
+                if (item.ToString().Contains("@00RR00006C000000000000000000000000000000000000000000000000000000000000000000000000000035*"))
+                {
+                    checkTop.Checked = false;
+                }
+
+                /*if (item.ToString().Contains("@00RR00000C000000000000000000000000000033*") || 
                     item.ToString().Contains("@00RR00000C000400000000000000000000000037*"))
                 {
                     checkTemptSensor.Checked = true;
@@ -436,17 +492,18 @@ namespace Workshop_Manufaktur_Terpadu
                 }
 
                 if (item.ToString().Contains("@00RR000000000000000000000000000000000040*") ||
-                    item.ToString().Contains("@00RR000000000400000000000000000000000044*"))
+                    item.ToString().Contains("@00RR000000000400000000000000000000000044*") ||
+                    item.ToString().Contains("@00RR000070000000000000000000000000000047*"))
                 {
                     checkTemptSensor.Checked = false;
                     checkUltSensor.Checked = false;
-                }
+                }*/
 
                 // Motor up status
                 if (item.ToString().Contains("@00RR00000400000000000044*"))
                 {
                     checkGateUp.Checked = true;
-                    openDoorTimer.Start();
+                    //openDoorTimer.Start();
                 }
 
                 if (item.ToString().Contains("@00RR00000000000000000040*"))
@@ -456,15 +513,17 @@ namespace Workshop_Manufaktur_Terpadu
                 }
 
                 // LS top status
-                if (item.ToString().Contains("@00RR0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040") ||
-                    item.ToString().Contains("000000000000000000000000000000000000000000*"))
+                if (/*item.ToString().Contains("@00RR0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040") ||
+                    item.ToString().Contains("000000000000000000000000000000000000000000*") || */
+                    item.ToString().Contains("@00RR00004000080000000000000000000000000000000000000000000000000000000000000000000000004C*"))
                 {
                     checkTop.Checked = true;
                 }
 
-                if (item.ToString().Contains("@00RR00006C000000000000000000000000000000000000000000000000000000000000000000000000000035*"))
+                if (item.ToString().Contains("@00RR00006C000000000000000000000000000000000000000000000000000000000000000000000000000035*") ||
+                    item.ToString().Contains("@00RR00006000080000000000000000000000000000000000000000000000000000000000000000000000004E*"))
                 {
-                    checkTop.Checked = false;
+                    //checkTop.Checked = false;
                 }
 
                 // LS bottom Status
@@ -486,9 +545,23 @@ namespace Workshop_Manufaktur_Terpadu
                     checkProx.Checked = true;
                 }
 
-                if (item.ToString().Contains("@00RR00006C00000000000000000000000000000000000035*"))
+                if (item.ToString().Contains("@00RR00006C00000000000000000000000000000000000035*") ||
+                    item.ToString().Contains("@00RR0000600008000000000000000000000000000000004E*"))
                 {
                     checkProx.Checked = false;
+                }
+
+                // motor down status
+                if (item.ToString().Contains("@00RR000008000000000000000000000000000048*"))
+                {
+                    checkGateDown.Checked = true;
+                    closeDoorTimer.Start();
+                }
+
+                if (item.ToString().Contains("@00RR000000000000000000000000000000000040*"))
+                {
+                    checkGateDown.Checked = false;
+                    closeDoorTimer.Stop();
                 }
 
                 listBox1.Items.Add(item);
