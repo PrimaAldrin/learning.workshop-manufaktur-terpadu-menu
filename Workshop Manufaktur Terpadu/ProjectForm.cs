@@ -18,6 +18,7 @@ namespace Workshop_Manufaktur_Terpadu
         bool ultTempSensorPreviouslyDetected = false;
         bool topLSSensorPreviouslyDetected = false;
         bool bottomLSSensorPreviouslyDetected = false;
+        bool proxSensorPreviouslyDetected = false;
 
         private int carPositionX;
         private bool moveLeft;
@@ -56,13 +57,24 @@ namespace Workshop_Manufaktur_Terpadu
         private void InitializePLC()
         {
             // baru connect langsung cek status pintu
-            // cek bottom dan top ls
+            // cek top dan bottom ls
             serialPort1.WriteLine("@00RR0000002042*");
+            serialPort1.WriteLine("@00RR0000004044*");
             serialPort1.WriteLine("@00RR0000004044*");
 
             // fix error saja
             serialPort1.WriteLine("@00RR0000000848*");
             serialPort1.WriteLine("@00RR0001000445*");
+
+            // cek us dan temp
+            serialPort1.WriteLine("@00RR0000000848*");
+
+            // cek motor up
+            serialPort1.WriteLine("@00RR0001000445*");
+
+            CheckBottomLSSensor();
+            CheckTopLSSensor();
+            CheckProximitySensor();
         }
 
         private void BtnLeft_MouseDown(object sender, MouseEventArgs e)
@@ -107,6 +119,7 @@ namespace Workshop_Manufaktur_Terpadu
             }
 
             CheckUltraSensor();
+            CheckProximitySensor();
         }
 
         private void MoveCar(int deltaX)
@@ -239,7 +252,7 @@ namespace Workshop_Manufaktur_Terpadu
             }
             else if (!sensorDetected && ultTempSensorPreviouslyDetected)
             {
-                serialPort1.WriteLine("@00WR0000000045*");
+                serialPort1.WriteLine("@00WR0000006043*");
                 serialPort1.WriteLine("@00RR0000000848*");
             }
             ultTempSensorPreviouslyDetected = sensorDetected;
@@ -260,12 +273,15 @@ namespace Workshop_Manufaktur_Terpadu
 
             if(sensorDetected && !topLSSensorPreviouslyDetected)
             {
-                serialPort1.WriteLine("");
+                serialPort1.WriteLine("@00RR0000002042*");
             }
-            else
+            else if(!sensorDetected && topLSSensorPreviouslyDetected)
             {
-                serialPort1.WriteLine("");
+                serialPort1.WriteLine("@00WR0000006C30*");
+                serialPort1.WriteLine("@00RR0000002042*");
+                serialPort1.WriteLine("@00RR0001000445*");
             }
+            topLSSensorPreviouslyDetected = sensorDetected;
         }
 
         private void CheckBottomLSSensor()
@@ -277,12 +293,43 @@ namespace Workshop_Manufaktur_Terpadu
 
             if (sensorDetected && !bottomLSSensorPreviouslyDetected)
             {
-                
+                serialPort1.WriteLine("@00RR0000004044*");
             }
-            else
+            else if (!sensorDetected && bottomLSSensorPreviouslyDetected)
             {
-                checkBottom.Checked = false;
+                serialPort1.WriteLine("@00WR0000004C32*");
+                serialPort1.WriteLine("@00RR0000004044*");
+                serialPort1.WriteLine("@00RR0000004044*");
             }
+            bottomLSSensorPreviouslyDetected = sensorDetected;
+        }
+
+        private void CheckProximitySensor()
+        {
+            // Check if the car is in front of the sensor
+            Rectangle carRect = new Rectangle(picCar.Location, picCar.Size);
+            Rectangle sensorRect = new Rectangle(proxSensor.Location, proxSensor.Size);
+
+            bool sensorDetected = carRect.IntersectsWith(sensorRect);
+
+            if (sensorDetected && !proxSensorPreviouslyDetected)
+            {
+                // nyalakan sensor proxy
+                serialPort1.WriteLine("@00WR0000007C31*");
+                serialPort1.WriteLine("@00RR0000001041*");
+
+                // Cek motor up
+                serialPort1.WriteLine("@00RR0001000445*");
+            }
+            else if (!sensorDetected && proxSensorPreviouslyDetected)
+            {
+                serialPort1.WriteLine("@00WR0000006043*");
+                serialPort1.WriteLine("@00RR0000001041*");
+                /*serialPort1.WriteLine("@00WR0000007C31*");
+                serialPort1.WriteLine("@00WR0000006043*");*/
+            }
+            proxSensorPreviouslyDetected = sensorDetected;
+            //serialPort1.WriteLine("@00WR0000006043*");
         }
 
         private void OpenDoorTimer_Tick(object sender, EventArgs e)
@@ -336,6 +383,20 @@ namespace Workshop_Manufaktur_Terpadu
             serialPort1.WriteLine("@00WR0000000045*");
 
             serialPort1.WriteLine("@00RR0200000143*");
+
+            // cek bottom dan top ls
+            serialPort1.WriteLine("@00RR0000002042*");
+            serialPort1.WriteLine("@00RR0000004044*");
+
+            // fix error saja
+            serialPort1.WriteLine("@00RR0000000848*");
+            serialPort1.WriteLine("@00RR0001000445*");
+
+            // cek us dan temp
+            serialPort1.WriteLine("@00RR0000000848*");
+
+            // cek motor up
+            serialPort1.WriteLine("@00RR0001000445*");
         }
 
         private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
@@ -385,12 +446,13 @@ namespace Workshop_Manufaktur_Terpadu
                 if (item.ToString().Contains("@00RR00000400000000000044*"))
                 {
                     checkGateUp.Checked = true;
-                    //openDoorTimer.Start();
+                    openDoorTimer.Start();
                 }
 
                 if (item.ToString().Contains("@00RR00000000000000000040*"))
                 {
                     checkGateUp.Checked = false;
+                    openDoorTimer.Stop();
                 }
 
                 // LS top status
@@ -400,10 +462,33 @@ namespace Workshop_Manufaktur_Terpadu
                     checkTop.Checked = true;
                 }
 
+                if (item.ToString().Contains("@00RR00006C000000000000000000000000000000000000000000000000000000000000000000000000000035*"))
+                {
+                    checkTop.Checked = false;
+                }
+
                 // LS bottom Status
-                if (item.ToString().Contains("@00RR000000000000000000000000000000000000000000000000000000000000000000000000000000000040*"))
+                if (item.ToString().Contains("@00RR000000000000000000000000000000000000000000000000000000000000000000000000000000000040*") ||
+                    item.ToString().Contains("@00RR0000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044") ||
+                    item.ToString().Contains("@00RR00000C0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000033"))
                 {
                     checkBottom.Checked = true;
+                }
+
+                if (item.ToString().Contains("@00RR00004C0004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000033"))
+                {
+                    checkBottom.Checked = false;
+                }
+
+                // Proximity status
+                if (item.ToString().Contains("@00RR00007C00000000000000000000000000000000000034*"))
+                {
+                    checkProx.Checked = true;
+                }
+
+                if (item.ToString().Contains("@00RR00006C00000000000000000000000000000000000035*"))
+                {
+                    checkProx.Checked = false;
                 }
 
                 listBox1.Items.Add(item);

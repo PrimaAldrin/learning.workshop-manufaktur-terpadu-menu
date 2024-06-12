@@ -46,7 +46,7 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.checkBottom = new System.Windows.Forms.CheckBox();
             this.checkTop = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkProx = new System.Windows.Forms.CheckBox();
             this.checkTemptSensor = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -70,6 +70,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.projectStatus = new System.Windows.Forms.CheckBox();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.proxSensor = new System.Windows.Forms.Panel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -226,7 +227,7 @@
             // 
             this.groupBox3.Controls.Add(this.checkBottom);
             this.groupBox3.Controls.Add(this.checkTop);
-            this.groupBox3.Controls.Add(this.checkBox3);
+            this.groupBox3.Controls.Add(this.checkProx);
             this.groupBox3.Controls.Add(this.checkTemptSensor);
             this.groupBox3.Controls.Add(this.checkUltSensor);
             this.groupBox3.Location = new System.Drawing.Point(362, 379);
@@ -259,16 +260,16 @@
             this.checkTop.Text = "Top Limit Switch";
             this.checkTop.UseVisualStyleBackColor = true;
             // 
-            // checkBox3
+            // checkProx
             // 
-            this.checkBox3.AutoCheck = false;
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(6, 65);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(67, 17);
-            this.checkBox3.TabIndex = 5;
-            this.checkBox3.Text = "Proximity";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkProx.AutoCheck = false;
+            this.checkProx.AutoSize = true;
+            this.checkProx.Location = new System.Drawing.Point(6, 65);
+            this.checkProx.Name = "checkProx";
+            this.checkProx.Size = new System.Drawing.Size(67, 17);
+            this.checkProx.TabIndex = 5;
+            this.checkProx.Text = "Proximity";
+            this.checkProx.UseVisualStyleBackColor = true;
             // 
             // checkTemptSensor
             // 
@@ -475,11 +476,20 @@
             this.listBox1.Size = new System.Drawing.Size(323, 69);
             this.listBox1.TabIndex = 16;
             // 
+            // proxSensor
+            // 
+            this.proxSensor.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.proxSensor.Location = new System.Drawing.Point(410, 176);
+            this.proxSensor.Name = "proxSensor";
+            this.proxSensor.Size = new System.Drawing.Size(10, 20);
+            this.proxSensor.TabIndex = 12;
+            // 
             // ProjectForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(708, 560);
+            this.Controls.Add(this.proxSensor);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.projectStatus);
             this.Controls.Add(this.button1);
@@ -530,7 +540,7 @@
         private System.Windows.Forms.ToolStripStatusLabel message_toolStripStatusLabel;
         private System.Windows.Forms.CheckBox checkUltSensor;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox checkProx;
         private System.Windows.Forms.CheckBox checkTemptSensor;
         private System.Windows.Forms.CheckBox checkBottom;
         private System.Windows.Forms.CheckBox checkTop;
@@ -559,5 +569,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox projectStatus;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Panel proxSensor;
     }
 }
