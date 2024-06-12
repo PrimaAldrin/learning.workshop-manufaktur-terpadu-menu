@@ -71,6 +71,7 @@
             this.projectStatus = new System.Windows.Forms.CheckBox();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.proxSensor = new System.Windows.Forms.Panel();
+            this.checkTimer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -470,9 +471,9 @@
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(368, 293);
+            this.listBox1.Location = new System.Drawing.Point(368, 228);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(543, 69);
+            this.listBox1.Size = new System.Drawing.Size(543, 147);
             this.listBox1.TabIndex = 16;
             // 
             // proxSensor
@@ -482,6 +483,10 @@
             this.proxSensor.Name = "proxSensor";
             this.proxSensor.Size = new System.Drawing.Size(10, 20);
             this.proxSensor.TabIndex = 12;
+            // 
+            // checkTimer
+            // 
+            this.checkTimer.Tick += new System.EventHandler(this.checkTimer_Tick);
             // 
             // ProjectForm
             // 
@@ -569,5 +574,6 @@
         private System.Windows.Forms.CheckBox projectStatus;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Panel proxSensor;
+        private System.Windows.Forms.Timer checkTimer;
     }
 }

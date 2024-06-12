@@ -26,10 +26,13 @@ namespace Workshop_Manufaktur_Terpadu
         bool doorOpen;
         int doorSpeed = 1;
 
+        int i = 0;
+
         public ProjectForm()
         {
             InitializeComponent();
             InitializeGame();
+            InitializeCheckTimer();
         }
 
         private void InitializeGame()
@@ -52,29 +55,6 @@ namespace Workshop_Manufaktur_Terpadu
             BtnLeft.MouseUp += BtnLeft_MouseUp;
             BtnRight.MouseDown += BtnRight_MouseDown;
             BtnRight.MouseUp += BtnRight_MouseUp;
-        }
-
-        private void InitializePLC()
-        {
-            // baru connect langsung cek status pintu
-            // cek top dan bottom ls
-            serialPort1.WriteLine("@00RR0000002042*");
-            serialPort1.WriteLine("@00RR0000004044*");
-            serialPort1.WriteLine("@00RR0000004044*");
-
-            // fix error saja
-            serialPort1.WriteLine("@00RR0000000848*");
-            serialPort1.WriteLine("@00RR0001000445*");
-
-            // cek us dan temp
-            serialPort1.WriteLine("@00RR0000000848*");
-
-            // cek motor up
-            serialPort1.WriteLine("@00RR0001000445*");
-
-            CheckBottomLSSensor();
-            CheckTopLSSensor();
-            CheckProximitySensor();
         }
 
         private void BtnLeft_MouseDown(object sender, MouseEventArgs e)
@@ -117,9 +97,6 @@ namespace Workshop_Manufaktur_Terpadu
             {
                 MoveCar(7); // Move car to the right by 10 pixels
             }
-
-            CheckUltraSensor();
-            CheckProximitySensor();
         }
 
         private void MoveCar(int deltaX)
@@ -232,7 +209,51 @@ namespace Workshop_Manufaktur_Terpadu
             }
         }
 
-        private void CheckUltraSensor()
+        private void InitializeCheckTimer()
+        {
+            checkTimer.Interval = 50;
+            checkTimer.Tick += new EventHandler(checkTimer_Tick);
+            checkTimer.Start();
+        }
+
+        private void checkTimer_Tick(object sender, EventArgs e)
+        {
+            if (serialPort1.IsOpen)
+            {
+                CheckTopLSSensor();
+                CheckBottomLSSensor();
+                CheckUltraTemptSensor();
+                CheckProximitySensor();
+            }
+        }
+
+        private void OpenDoorTimer_Tick(object sender, EventArgs e)
+        {
+            if (btnDoor.Location.Y > 0)
+            {
+                btnDoor.Location = new Point(btnDoor.Location.X, btnDoor.Location.Y - doorSpeed);
+            }
+            else
+            {
+                doorOpen = true;
+                openDoorTimer.Stop();
+            }
+        }
+
+        private void CloseDoorTimer_Tick(object sender, EventArgs e)
+        {
+            if (btnDoor.Location.Y < 220 - btnDoor.Height)
+            {
+                btnDoor.Location = new Point(btnDoor.Location.X, btnDoor.Location.Y + doorSpeed);
+            }
+            else
+            {
+                doorOpen = false;
+                closeDoorTimer.Stop();
+            }
+        }
+
+        private void CheckUltraTemptSensor()
         {
             // Check if the car is in front of the sensor
             Rectangle carRect = new Rectangle(picCar.Location, picCar.Size);
@@ -255,12 +276,6 @@ namespace Workshop_Manufaktur_Terpadu
             }
             ultTempSensorPreviouslyDetected = sensorDetected;
         }
-        private void CheckTempSensor()
-        {
-            // Check if the car is in front of the sensor
-            Rectangle carRect = new Rectangle(picCar.Location, picCar.Size);
-            Rectangle sensorRect = new Rectangle(tempSensor.Location, tempSensor.Size);
-        }
 
         private void CheckTopLSSensor()
         {
@@ -271,8 +286,10 @@ namespace Workshop_Manufaktur_Terpadu
 
             if(sensorDetected && !topLSSensorPreviouslyDetected)
             {
-
+                serialPort1.WriteLine("@00WR0000004041*"); // Write on trigger S_TOP_LS
+                serialPort1.WriteLine("@00RR0000002042*"); // Request S_TOP_LS Status
             }
+
             else if(!sensorDetected && topLSSensorPreviouslyDetected)
             {
                 serialPort1.WriteLine("@00WR0000006C30*"); // Write off trigger S_TOP_LS
@@ -291,13 +308,19 @@ namespace Workshop_Manufaktur_Terpadu
 
             if (sensorDetected && !bottomLSSensorPreviouslyDetected)
             {
+                serialPort1.WriteLine("@00WR0000000045*"); // Write on trigger BOTTOM_LS
 
+                serialPort1.WriteLine("@00RR0000004044*"); // Request status BOTTOM_LS 2x
+                serialPort1.WriteLine("@00RR0000004044*"); // fix bug
+
+                serialPort1.WriteLine("@00RR0001000849*"); // Request O_DOWN_MOTOR Status
             }
+
             else if (!sensorDetected && bottomLSSensorPreviouslyDetected)
             {
                 serialPort1.WriteLine("@00WR0000004C32*"); // Write off trigger Bottom_LS
 
-                serialPort1.WriteLine("@00RR0000004044*"); // Request status Bottom_LS 2x untuk fix bug
+                serialPort1.WriteLine("@00RR0000004044*"); // Request status BOTTOM_LS 2x to fix bug
                 serialPort1.WriteLine("@00RR0000004044*"); // fix bug
             }
             bottomLSSensorPreviouslyDetected = sensorDetected;
@@ -326,38 +349,6 @@ namespace Workshop_Manufaktur_Terpadu
                 serialPort1.WriteLine("@00RR0001000849*"); // Request O_DOWN_MOTOR Status
             }
             proxSensorPreviouslyDetected = sensorDetected;
-        }
-
-        private void OpenDoorTimer_Tick(object sender, EventArgs e)
-        {
-            if (btnDoor.Location.Y > 0)
-            {
-                btnDoor.Location = new Point(btnDoor.Location.X, btnDoor.Location.Y - doorSpeed);
-            }
-            else
-            {
-                doorOpen = true;
-                openDoorTimer.Stop();
-            }
-
-            CheckTopLSSensor();
-            CheckBottomLSSensor();
-        }
-
-        private void CloseDoorTimer_Tick(object sender, EventArgs e)
-        {
-            if (btnDoor.Location.Y < 220 - btnDoor.Height)
-            {
-                btnDoor.Location = new Point(btnDoor.Location.X, btnDoor.Location.Y + doorSpeed);
-            }
-            else
-            {
-                doorOpen = false;
-                closeDoorTimer.Stop();
-            }
-
-            CheckTopLSSensor();
-            CheckBottomLSSensor();
         }
 
         private void btnStartProject_Click(object sender, EventArgs e)
@@ -392,35 +383,38 @@ namespace Workshop_Manufaktur_Terpadu
             }
             else
             {
-                // -------------------------------Change reading status here
-
-                // Project Status
+                // Project Status-----------------------------------------------------------------------------------------------------
                 if (item.ToString().Contains("@00RR00000141*"))
                 {
                     projectStatus.Checked = true;
+                    listBox1.Items.Add("V status on");
                 }
                 if (item.ToString().Contains("@00RR00000040*"))
                 {
                     projectStatus.Checked = false;
+                    listBox1.Items.Add("V status off");
                 }
 
-                // Ultrasonic and temperature status
+                // Ultrasonic and temperature status----------------------------------------------------------------------------------
                 if (item.ToString().Contains("@00RR00000C00040000000037*"))
                 {
                     checkUltSensor.Checked = true;
                     checkTemptSensor.Checked = true;
+                    listBox1.Items.Add("V temp us on");
                 }
 
                 if (item.ToString().Contains("@00RR00007000000000000047*"))
                 {
                     checkUltSensor.Checked = false;
                     checkTemptSensor.Checked = false;
+                    listBox1.Items.Add("V temp us off");
                 }
 
-                // Motor up status
+                // Motor up status-----------------------------------------------------------------------------------------------------
                 if (item.ToString().Contains("@00RR00000400000000000044*"))
                 {
                     checkGateUp.Checked = true;
+                    listBox1.Items.Add("V gate up on");
 
                     // Motor mulai membuka pintu saat ini
                     openDoorTimer.Start();
@@ -429,63 +423,66 @@ namespace Workshop_Manufaktur_Terpadu
                 if (item.ToString().Contains("@00RR00000000000000000040*"))
                 {
                     checkGateUp.Checked = false;
+                    listBox1.Items.Add("V gate up off");
                 }
 
-                // BOTTOM_LS Status
+                // BOTTOM_LS Status-----------------------------------------------------------------------------------------------------
                 if (item.ToString().Contains("@00RR00004C0004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000033"))
                 {
                     checkBottom.Checked = false;
+                    listBox1.Items.Add("V bottom off");
                 }
 
-                // TOP_LS Status
+                if (item.ToString().Contains("@00RR0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040"))
+                {
+                    checkBottom.Checked = true;
+                    listBox1.Items.Add("V bottom on");
+                }
+
+                // TOP_LS Status--------------------------------------------------------------------------------------------------------
                 if (item.ToString().Contains("@00RR00006C000000000000000000000000000000000000000000000000000000000000000000000000000035*"))
                 {
                     checkTop.Checked = false;
                     openDoorTimer.Stop();
+                    listBox1.Items.Add("V top off");
                 }
 
-                // Proxy status
+                if (item.ToString().Contains("@00RR00004000080000000000000000000000000000000000000000000000000000000000000000000000004C*"))
+                {
+                    checkTop.Checked = true;
+                    listBox1.Items.Add("V top on");
+                }
+
+                // Proxy status----------------------------------------------------------------------------------------------------------
                 if (item.ToString().Contains("@00RR00007C00000000000000000000000000000000000034*"))
                 {
                     checkProx.Checked = true;
+                    listBox1.Items.Add("V proxy on");
                 }
 
                 if (item.ToString().Contains("@00RR0000600008000000000000000000000000000000004E"))
                 {
                     checkProx.Checked = false;
-                    closeDoorTimer.Start();
+                    listBox1.Items.Add("V proxy off");
                 }
 
-                // Motor Down status
+                // Motor Down status-----------------------------------------------------------------------------------------------------
                 if (item.ToString().Contains("@00RR000008000000000000000000000000000048*"))
                 {
                     checkGateDown.Checked = true;
                     closeDoorTimer.Start();
+                    listBox1.Items.Add("V gate down on");
+                }
+                if (item.ToString().Contains("@00RR000000000000000000000000000000000040*"))
+                {
+                    checkGateDown.Checked = false;
+                    closeDoorTimer.Stop();
+                    listBox1.Items.Add("V gate down off");
                 }
 
-                listBox1.Items.Add(item);
+                i++;
+                listBox1.Items.Add(i.ToString() + ". " + item);
                 listBox1.SelectedIndex = listBox1.Items.Count - 1;
-            }
-        }
-
-        private void splitData(object item)
-        {
-            string[] data = new string[6];
-
-            data[0] = item.ToString().Substring(0, 1);
-            data[1] = item.ToString().Substring(1, 2);
-            data[2] = item.ToString().Substring(3, 2);
-            data[3] = item.ToString().Substring(5, 5);
-            data[4] = item.ToString().Substring(10, 1);
-            data[5] = item.ToString().Substring(11, 3);
-
-            if (Int32.Parse(data[4]) == 1)
-            {
-                projectStatus.Checked = true;
-            }
-            else
-            {
-                projectStatus.Checked = false;
             }
         }
     }
