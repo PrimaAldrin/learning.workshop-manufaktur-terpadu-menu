@@ -236,7 +236,6 @@
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Sensor Status";
-            this.groupBox3.Enter += new System.EventHandler(this.groupBox3_Enter);
             // 
             // checkBottom
             // 
