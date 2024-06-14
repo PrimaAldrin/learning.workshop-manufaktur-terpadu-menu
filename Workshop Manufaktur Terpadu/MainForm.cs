@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Simple_Serial_Communication;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -33,6 +34,12 @@ namespace Workshop_Manufaktur_Terpadu
         {
             TruckGame truckGame = new TruckGame();
             truckGame.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            WTAM wTAM5678 = new WTAM();
+            wTAM5678.Show();
         }
     }
 }

@@ -63,6 +63,36 @@ namespace Workshop_Manufaktur_Terpadu.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _9rgbhln61a3ojg2m3fv6vskk2m {
+            get {
+                object obj = ResourceManager.GetObject("9rgbhln61a3ojg2m3fv6vskk2m", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap industrial_background {
+            get {
+                object obj = ResourceManager.GetObject("industrial-background", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NicePng_signal_png_2364577 {
+            get {
+                object obj = ResourceManager.GetObject("NicePng_signal-png_2364577", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap vecteezy_ai_generated_black_delivery_truck_on_transparent_background_35907399 {
             get {
                 object obj = ResourceManager.GetObject("vecteezy_ai-generated-black-delivery-truck-on-transparent-background_35907399", resourceCulture);

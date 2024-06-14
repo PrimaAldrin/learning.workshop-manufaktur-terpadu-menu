@@ -23,7 +23,6 @@ namespace Workshop_Manufaktur_Terpadu
         private int carPositionX;
         private bool moveLeft;
         private bool moveRight;
-        bool doorOpen;
         int doorSpeed = 1;
 
         int i = 0;
@@ -32,9 +31,8 @@ namespace Workshop_Manufaktur_Terpadu
         {
             InitializeComponent();
             InitializeGame();
-            InitializeCheckTimer();
         }
-
+        // ------------------------------------------------------------------------Simulator--------------------------------------------------------------------------
         private void InitializeGame()
         {
             // Set initial position of the car
@@ -56,13 +54,11 @@ namespace Workshop_Manufaktur_Terpadu
             BtnRight.MouseDown += BtnRight_MouseDown;
             BtnRight.MouseUp += BtnRight_MouseUp;
         }
-
         private void BtnLeft_MouseDown(object sender, MouseEventArgs e)
         {
             moveLeft = true;
             moveTimer.Start();
         }
-
         private void BtnLeft_MouseUp(object sender, MouseEventArgs e)
         {
             moveLeft = false;
@@ -71,13 +67,11 @@ namespace Workshop_Manufaktur_Terpadu
                 moveTimer.Stop();
             }
         }
-
         private void BtnRight_MouseDown(object sender, MouseEventArgs e)
         {
             moveRight = true;
             moveTimer.Start();
         }
-
         private void BtnRight_MouseUp(object sender, MouseEventArgs e)
         {
             moveRight = false;
@@ -86,19 +80,17 @@ namespace Workshop_Manufaktur_Terpadu
                 moveTimer.Stop();
             }
         }
-
         private void MoveTimer_Tick(object sender, EventArgs e)
         {
             if (moveLeft)
             {
-                MoveCar(-7); // Move car to the left by 10 pixels
+                MoveCar(-4); // Move car to the left by 10 pixels
             }
             if (moveRight)
             {
-                MoveCar(7); // Move car to the right by 10 pixels
+                MoveCar(4); // Move car to the right by 10 pixels
             }
         }
-
         private void MoveCar(int deltaX)
         {
             carPositionX += deltaX;
@@ -113,6 +105,13 @@ namespace Workshop_Manufaktur_Terpadu
             }
             // Update car position
             picCar.Location = new Point(carPositionX, picCar.Location.Y);
+        }
+        //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        private void InitializePLC()
+        {
+            serialPort1.WriteLine("@00RR0200000143*"); // Check project status
+            serialPort1.WriteLine("@00RC204800015E*"); // Check counting status
         }
 
         private void ProjectForm_Load(object sender, EventArgs e)
@@ -140,6 +139,8 @@ namespace Workshop_Manufaktur_Terpadu
                 serialPort1.Open();
                 serialPort1.BaudRate = Int32.Parse(baudrateComboBox.Text);
                 message_toolStripStatusLabel.Text = serialPort1.PortName + " is connected";
+                InitializeCheckTimer();
+                InitializePLC();
             }
 
             catch(Exception ex)
@@ -157,13 +158,7 @@ namespace Workshop_Manufaktur_Terpadu
 
                 serialPortComboBox.Enabled = false;
                 baudrateComboBox.Enabled = false;
-                // InitializePLC();
-
-                // Just checking, please delete later:
-                checkTop.Checked = true;
-                checkBottom.Checked = true;
             }
-
         }
 
         private void close_button_Click(object sender, EventArgs e)
@@ -235,7 +230,6 @@ namespace Workshop_Manufaktur_Terpadu
             }
             else
             {
-                doorOpen = true;
                 openDoorTimer.Stop();
             }
         }
@@ -248,7 +242,6 @@ namespace Workshop_Manufaktur_Terpadu
             }
             else
             {
-                doorOpen = false;
                 closeDoorTimer.Stop();
             }
         }
@@ -265,7 +258,7 @@ namespace Workshop_Manufaktur_Terpadu
             {
                 serialPort1.WriteLine("@00WR0000000C36*"); // Write on trigger S_TEMP and S_US
                 serialPort1.WriteLine("@00RR0000000444*"); // Request sensor status
-
+                serialPort1.WriteLine("@00RR0000000444*");
                 serialPort1.WriteLine("@00RR0001000445*"); // Request O_MOTOR_UP_STATUS
             }
 
@@ -286,12 +279,14 @@ namespace Workshop_Manufaktur_Terpadu
 
             if(sensorDetected && !topLSSensorPreviouslyDetected)
             {
+                serialPort1.WriteLine("@00RR0000002042*");
                 serialPort1.WriteLine("@00WR0000004041*"); // Write on trigger S_TOP_LS
                 serialPort1.WriteLine("@00RR0000002042*"); // Request S_TOP_LS Status
             }
 
             else if(!sensorDetected && topLSSensorPreviouslyDetected)
             {
+                serialPort1.WriteLine("@00RR0000002042*");
                 serialPort1.WriteLine("@00WR0000006C30*"); // Write off trigger S_TOP_LS
                 serialPort1.WriteLine("@00RR0000002042*"); // Request S_TOP_LS Status
                 serialPort1.WriteLine("@00RR0001000445*"); // Request O_MOTOR_UP Status
@@ -314,6 +309,7 @@ namespace Workshop_Manufaktur_Terpadu
                 serialPort1.WriteLine("@00RR0000004044*"); // fix bug
 
                 serialPort1.WriteLine("@00RR0001000849*"); // Request O_DOWN_MOTOR Status
+                serialPort1.WriteLine("@00RR0001000445*");
             }
 
             else if (!sensorDetected && bottomLSSensorPreviouslyDetected)
@@ -347,6 +343,7 @@ namespace Workshop_Manufaktur_Terpadu
                 serialPort1.WriteLine("@00RR0000001041*"); // Request Proxy status
 
                 serialPort1.WriteLine("@00RR0001000849*"); // Request O_DOWN_MOTOR Status
+                serialPort1.WriteLine("@00RC204800015E*"); // Request counter value
             }
             proxSensorPreviouslyDetected = sensorDetected;
         }
@@ -387,12 +384,12 @@ namespace Workshop_Manufaktur_Terpadu
                 if (item.ToString().Contains("@00RR00000141*"))
                 {
                     projectStatus.Checked = true;
-                    listBox1.Items.Add("V status on");
+                    listBox1.Items.Add("Project started");
                 }
                 if (item.ToString().Contains("@00RR00000040*"))
                 {
                     projectStatus.Checked = false;
-                    listBox1.Items.Add("V status off");
+                    listBox1.Items.Add("Project stopped");
                 }
 
                 // Ultrasonic and temperature status----------------------------------------------------------------------------------
@@ -400,21 +397,21 @@ namespace Workshop_Manufaktur_Terpadu
                 {
                     checkUltSensor.Checked = true;
                     checkTemptSensor.Checked = true;
-                    listBox1.Items.Add("V temp us on");
+                    listBox1.Items.Add("Ultrasonic and temperature checked");
                 }
 
                 if (item.ToString().Contains("@00RR00007000000000000047*"))
                 {
                     checkUltSensor.Checked = false;
                     checkTemptSensor.Checked = false;
-                    listBox1.Items.Add("V temp us off");
+                    listBox1.Items.Add("Passed ultrasonic and temperature");
                 }
 
                 // Motor up status-----------------------------------------------------------------------------------------------------
                 if (item.ToString().Contains("@00RR00000400000000000044*"))
                 {
                     checkGateUp.Checked = true;
-                    listBox1.Items.Add("V gate up on");
+                    listBox1.Items.Add("Rolling up the gate");
 
                     // Motor mulai membuka pintu saat ini
                     openDoorTimer.Start();
@@ -423,20 +420,20 @@ namespace Workshop_Manufaktur_Terpadu
                 if (item.ToString().Contains("@00RR00000000000000000040*"))
                 {
                     checkGateUp.Checked = false;
-                    listBox1.Items.Add("V gate up off");
+                    listBox1.Items.Add("Rolling gate up stopped");
                 }
 
                 // BOTTOM_LS Status-----------------------------------------------------------------------------------------------------
                 if (item.ToString().Contains("@00RR00004C0004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000033"))
                 {
                     checkBottom.Checked = false;
-                    listBox1.Items.Add("V bottom off");
+                    listBox1.Items.Add("Bottom limit switch released");
                 }
 
                 if (item.ToString().Contains("@00RR0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040"))
                 {
                     checkBottom.Checked = true;
-                    listBox1.Items.Add("V bottom on");
+                    listBox1.Items.Add("Bottom limit switch pressed");
                 }
 
                 // TOP_LS Status--------------------------------------------------------------------------------------------------------
@@ -444,26 +441,27 @@ namespace Workshop_Manufaktur_Terpadu
                 {
                     checkTop.Checked = false;
                     openDoorTimer.Stop();
-                    listBox1.Items.Add("V top off");
+                    listBox1.Items.Add("Top limit switch released");
                 }
 
-                if (item.ToString().Contains("@00RR00004000080000000000000000000000000000000000000000000000000000000000000000000000004C*"))
+                if (item.ToString().Contains("@00RR00004000080000000000000000000000000000000000000000000000000000000000000000000000004C*") ||
+                    item.ToString().Contains("@00RR000000000000000000000000000000000000000000000000000000000000000000000000000000000040*"))
                 {
                     checkTop.Checked = true;
-                    listBox1.Items.Add("V top on");
+                    listBox1.Items.Add("Top limit switch pressed");
                 }
 
                 // Proxy status----------------------------------------------------------------------------------------------------------
                 if (item.ToString().Contains("@00RR00007C00000000000000000000000000000000000034*"))
                 {
                     checkProx.Checked = true;
-                    listBox1.Items.Add("V proxy on");
+                    listBox1.Items.Add("Proximity checked");
                 }
 
                 if (item.ToString().Contains("@00RR0000600008000000000000000000000000000000004E"))
                 {
                     checkProx.Checked = false;
-                    listBox1.Items.Add("V proxy off");
+                    listBox1.Items.Add("Proximity passed");
                 }
 
                 // Motor Down status-----------------------------------------------------------------------------------------------------
@@ -471,19 +469,50 @@ namespace Workshop_Manufaktur_Terpadu
                 {
                     checkGateDown.Checked = true;
                     closeDoorTimer.Start();
-                    listBox1.Items.Add("V gate down on");
+                    listBox1.Items.Add("Rolling down the gate");
                 }
                 if (item.ToString().Contains("@00RR000000000000000000000000000000000040*"))
                 {
                     checkGateDown.Checked = false;
                     closeDoorTimer.Stop();
-                    listBox1.Items.Add("V gate down off");
+                    listBox1.Items.Add("Rolling gate down stopped");
                 }
 
-                i++;
-                listBox1.Items.Add(i.ToString() + ". " + item);
+                if (item.ToString().StartsWith("@00RC0000"))
+                {
+                    // @00RC00000859*
+                    // string counterValue = item.ToString().Substring(8, 2);
+                    string extractedValue = item.ToString().Substring(9, 2);
+                    int value = Int32.Parse(extractedValue);
+                    int realValue = 10 - value;
+
+                    counterVal.Text = value.ToString();
+                    listBox1.Items.Add("Updating truck count to: " + realValue);
+                    
+                    progressBar1.Value = realValue;
+
+                    if(realValue > progressBar1.Maximum)
+                    {
+                        progressBar1.Maximum = realValue;
+                    }
+                }
+
+                /*listBox1.Items.Add(item);*/
                 listBox1.SelectedIndex = listBox1.Items.Count - 1;
             }
+        }
+
+        private void btnDoor_Click(object sender, EventArgs e)
+        {
+            carPositionX = 0;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+            serialPort1.WriteLine("@00WR000000804D*");
+            serialPort1.WriteLine("@00WR0000000045*");
+            serialPort1.WriteLine("@00RC204800015E*");
         }
     }
 }
